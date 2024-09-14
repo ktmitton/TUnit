@@ -16,8 +16,8 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual,TActual,TAnd,TOr>(
-            @is.Is().AssertionBuilder.AppendCallerMethodWithMultipleExpressions([doNotPopulateThisValue1, doNotPopulateThisValue2]), 
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual,TActual,TAnd,TOr>(
+            @is.AssertionBuilder.AppendCallerMethodWithMultipleExpressions([doNotPopulateThisValue1, doNotPopulateThisValue2]), 
             expected,
             (actual, _, _, _) =>
             {
@@ -34,18 +34,18 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new EqualsAssertCondition<TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(null), TActual.Zero));
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new EqualsAssertCondition<TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(null), TActual.Zero));
     }
     
     public static BaseAssertCondition<TActual, TAnd, TOr> IsGreaterThan<TActual, TAnd, TOr>(this IIs<TActual, TAnd, TOr> @is, TActual expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "") where TActual : INumber<TActual>
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -59,11 +59,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -77,11 +77,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 
@@ -95,11 +95,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 
@@ -113,11 +113,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 
@@ -131,11 +131,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 
@@ -149,11 +149,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 
@@ -167,11 +167,11 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{@is.Is().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{@is.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 

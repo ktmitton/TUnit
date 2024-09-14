@@ -16,11 +16,7 @@ public class ValueAssertionBuilder<TActual, TAnd, TOr>
 {
     private readonly TActual _value;
 
-    Does<TActual, TAnd, TOr> IDoes<TActual, TAnd, TOr>.Does() => new(this, ConnectorType.None, null);
-    DoesNot<TActual, TAnd, TOr> IDoes<TActual, TAnd, TOr>.DoesNot() => new(this, ConnectorType.None, null);
-    Is<TActual, TAnd, TOr> IIs<TActual, TAnd, TOr>.Is() => new(this, ConnectorType.None, null);
-    IsNot<TActual, TAnd, TOr> IIs<TActual, TAnd, TOr>.IsNot() => new(this, ConnectorType.None, null);
-    Has<TActual, TAnd, TOr> IHas<TActual, TAnd, TOr>.Has() => new(this, ConnectorType.None, null);
+    private AssertionBuilderConnector<TActual, TAnd, TOr> AssertionBuilderConnector => new(this, ConnectorType.None, null);
 
     internal ValueAssertionBuilder(TActual value, string expressionBuilder) : base(expressionBuilder)
     {
@@ -49,4 +45,6 @@ public class ValueAssertionBuilder<TActual, TAnd, TOr>
         AssertionMessage = (AssertionMessageValue<TActual>) message;
         return this;
     }
+
+    AssertionBuilder<TActual, TAnd, TOr> IVerbAction<TActual, TAnd, TOr>.AssertionBuilder => AssertionBuilderConnector.AssertionBuilder;
 }

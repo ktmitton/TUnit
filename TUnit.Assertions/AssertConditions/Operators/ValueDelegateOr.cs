@@ -1,4 +1,4 @@
-using TUnit.Assertions.AssertConditions.Interfaces;
+using TUnit.Assertions.AssertionBuilders;
 
 namespace TUnit.Assertions.AssertConditions.Operators;
 
@@ -9,12 +9,9 @@ public class ValueDelegateOr<TActual>
     {
     }
     
-    Is<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IIs<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Is() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    IsNot<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IIs<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.IsNot() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    Has<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IHas<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Has() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    Does<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IDoes<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Does() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    DoesNot<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IDoes<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.DoesNot() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    Throws<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IThrows<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Throws() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
+    private AssertionBuilderConnector<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> AssertionBuilderConnector => new(OtherAssertCondition.AssertionBuilder, ConnectorType.And, OtherAssertCondition);
+    public AssertionBuilder<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> AssertionBuilder =>
+        AssertionBuilderConnector.AssertionBuilder;
     
     public static ValueDelegateOr<TActual> Create(BaseAssertCondition<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> otherAssertCondition)
     {

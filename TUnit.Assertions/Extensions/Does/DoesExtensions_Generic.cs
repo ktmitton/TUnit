@@ -15,6 +15,6 @@ public static partial class DoesExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(does.Does(), new EnumerableContainsAssertCondition<TActual, TInner, TAnd, TOr>(does.Does().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, equalityComparer));
+        return AssertionConditionCombiner.Combine(does.AssertionBuilder, new EnumerableContainsAssertCondition<TActual, TInner, TAnd, TOr>(does.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, equalityComparer));
     }
 }

@@ -15,8 +15,8 @@ public static partial class HasExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(has.Has(), new EnumerableCountEqualToAssertCondition<TActual, TAnd, TOr>(
-            has.Has().AssertionBuilder.AppendCallerMethod(null),
+        return AssertionConditionCombiner.Combine(has.AssertionBuilder, new EnumerableCountEqualToAssertCondition<TActual, TAnd, TOr>(
+            has.AssertionBuilder.AppendCallerMethod(null),
             1)
         );
     }
@@ -26,8 +26,8 @@ public static partial class HasExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(has.Has(), new EnumerableDistinctItemsAssertCondition<TActual, object, TAnd, TOr>(
-            has.Has().AssertionBuilder.AppendCallerMethod(null),
+        return AssertionConditionCombiner.Combine(has.AssertionBuilder, new EnumerableDistinctItemsAssertCondition<TActual, object, TAnd, TOr>(
+            has.AssertionBuilder.AppendCallerMethod(null),
             default,
             null)
         );
@@ -38,8 +38,8 @@ public static partial class HasExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(has.Has(), new EnumerableDistinctItemsAssertCondition<TActual, TInner, TAnd, TOr>(
-            has.Has().AssertionBuilder.AppendCallerMethod(null),
+        return AssertionConditionCombiner.Combine(has.AssertionBuilder, new EnumerableDistinctItemsAssertCondition<TActual, TInner, TAnd, TOr>(
+            has.AssertionBuilder.AppendCallerMethod(null),
             default,
             equalityComparer)
         );
@@ -50,6 +50,6 @@ public static partial class HasExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return new EnumerableCount<TActual, TAnd, TOr>(has.Has().AssertionBuilder.AppendCallerMethod(null), has.Has().ConnectorType, has.Has().OtherAssertCondition);
+        return new EnumerableCount<TActual, TAnd, TOr>(has.AssertionBuilder.AppendCallerMethod(null), has.AssertionBuilder.ConnectorType, has.AssertionBuilder.OtherAssertCondition);
     }
 }

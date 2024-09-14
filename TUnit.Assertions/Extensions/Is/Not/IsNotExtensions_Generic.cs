@@ -14,33 +14,33 @@ public static partial class IsNotExtensions
         where TAnd : And<TActual, TAnd, TOr>, IAnd<TActual, TAnd, TOr>
         where TOr : Or<TActual, TAnd, TOr>, IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new NotNullAssertCondition<TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(string.Empty)));
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new NotNullAssertCondition<TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(string.Empty)));
     }
     
     public static BaseAssertCondition<TActual, TAnd, TOr> IsNotEqualTo<TActual, TAnd, TOr>(this IIs<TActual, TAnd, TOr> @is, TActual expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "")
         where TAnd : And<TActual, TAnd, TOr>, IAnd<TActual, TAnd, TOr>
         where TOr : Or<TActual, TAnd, TOr>, IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(),
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder,
             new NotEqualsAssertCondition<TActual, TAnd, TOr>(
-                @is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected));
+                @is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected));
     }
 
     public static BaseAssertCondition<TActual, TAnd, TOr> IsNotTypeOf<TActual, TExpected, TAnd, TOr>(this IIs<TActual, TAnd, TOr> @is)
         where TAnd : And<TActual, TAnd, TOr>, IAnd<TActual, TAnd, TOr>
         where TOr : Or<TActual, TAnd, TOr>, IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(),
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder,
             new NotTypeOfAssertCondition<TActual, TExpected, TAnd, TOr>(
-                @is.Is().AssertionBuilder.AppendCallerMethod(typeof(TExpected).FullName)));
+                @is.AssertionBuilder.AppendCallerMethod(typeof(TExpected).FullName)));
     }
 
     public static BaseAssertCondition<TActual, TAnd, TOr> IsNotAssignableTo<TActual, TExpected, TAnd, TOr>(this IIs<TActual, TAnd, TOr> @is)
         where TAnd : And<TActual, TAnd, TOr>, IAnd<TActual, TAnd, TOr>
         where TOr : Or<TActual, TAnd, TOr>, IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TExpected, TAnd, TOr>(
-            @is.Is().AssertionBuilder.AppendCallerMethod(typeof(TExpected).FullName),
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TExpected, TAnd, TOr>(
+            @is.AssertionBuilder.AppendCallerMethod(typeof(TExpected).FullName),
             default,
             (value, _, _, _) => !value!.GetType().IsAssignableTo(typeof(TExpected)),
             (actual, _) => $"{actual?.GetType()} is assignable to {typeof(TExpected).Name}"));
@@ -50,8 +50,8 @@ public static partial class IsNotExtensions
         where TAnd : And<TActual, TAnd, TOr>, IAnd<TActual, TAnd, TOr>
         where TOr : Or<TActual, TAnd, TOr>, IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TExpected, TAnd, TOr>(
-            @is.Is().AssertionBuilder.AppendCallerMethod(typeof(TExpected).FullName),
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TExpected, TAnd, TOr>(
+            @is.AssertionBuilder.AppendCallerMethod(typeof(TExpected).FullName),
             default,
             (value, _, _, _) => !value!.GetType().IsAssignableFrom(typeof(TExpected)),
             (actual, _) => $"{actual?.GetType()} is assignable from {typeof(TExpected).Name}"));

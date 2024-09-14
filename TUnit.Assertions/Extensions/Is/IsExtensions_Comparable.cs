@@ -14,7 +14,7 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
             {
                 return value.CompareTo(expected) > 0;
             },
@@ -26,7 +26,7 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
             {
                 return value.CompareTo(expected) >= 0;
             },
@@ -38,7 +38,7 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
             {
                 return value.CompareTo(expected) < 0;
             },
@@ -50,7 +50,7 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, _) =>
             {
                 return value.CompareTo(expected) <= 0;
             },
@@ -62,7 +62,7 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethodWithMultipleExpressions([doNotPopulateThisValue1, doNotPopulateThisValue2]), default, (value, _, _, _) =>
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethodWithMultipleExpressions([doNotPopulateThisValue1, doNotPopulateThisValue2]), default, (value, _, _, _) =>
             {
                 return value.CompareTo(lowerBound) >= 0 && value.CompareTo(upperBound) <= 0;
             },

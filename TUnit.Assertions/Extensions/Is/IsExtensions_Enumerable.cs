@@ -16,7 +16,7 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new EnumerableEquivalentToAssertCondition<TActual, TInner, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, equalityComparer));
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new EnumerableEquivalentToAssertCondition<TActual, TInner, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, equalityComparer));
     }
     
     public static BaseAssertCondition<TActual, TAnd, TOr> IsEmpty<TActual, TAnd, TOr>(this IIs<TActual, TAnd, TOr> @is)
@@ -24,6 +24,6 @@ public static partial class IsExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(@is.Is(), new EnumerableCountEqualToAssertCondition<TActual, TAnd, TOr>(@is.Is().AssertionBuilder.AppendCallerMethod(null), 0));
+        return AssertionConditionCombiner.Combine(@is.AssertionBuilder, new EnumerableCountEqualToAssertCondition<TActual, TAnd, TOr>(@is.AssertionBuilder.AppendCallerMethod(null), 0));
     }
 }

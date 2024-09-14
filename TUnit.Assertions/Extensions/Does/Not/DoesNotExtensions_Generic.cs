@@ -13,6 +13,6 @@ public static partial class DoesNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(doesNot.DoesNot(), new EnumerableNotContainsAssertCondition<TActual, TInner, TAnd, TOr>(doesNot.DoesNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, equalityComparer));
+        return AssertionConditionCombiner.Combine(doesNot.AssertionBuilder, new EnumerableNotContainsAssertCondition<TActual, TInner, TAnd, TOr>(doesNot.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), expected, equalityComparer));
     }
 }

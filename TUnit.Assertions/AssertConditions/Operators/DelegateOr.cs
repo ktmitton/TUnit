@@ -1,4 +1,4 @@
-using TUnit.Assertions.AssertConditions.Interfaces;
+using TUnit.Assertions.AssertionBuilders;
 
 namespace TUnit.Assertions.AssertConditions.Operators;
 
@@ -9,10 +9,13 @@ public class DelegateOr<TActual>
     {
     }
 
-    Throws<TActual, DelegateAnd<TActual>, DelegateOr<TActual>> IThrows<TActual, DelegateAnd<TActual>, DelegateOr<TActual>>.Throws() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
+    private AssertionBuilderConnector<TActual, DelegateAnd<TActual>, DelegateOr<TActual>> AssertionBuilderConnector => new(OtherAssertCondition.AssertionBuilder, ConnectorType.And, OtherAssertCondition);
     
     public static DelegateOr<TActual> Create(BaseAssertCondition<TActual, DelegateAnd<TActual>, DelegateOr<TActual>> otherAssertCondition)
     {
         return new DelegateOr<TActual>(otherAssertCondition);
     }
+    
+    public AssertionBuilder<TActual, DelegateAnd<TActual>, DelegateOr<TActual>> AssertionBuilder =>
+        AssertionBuilderConnector.AssertionBuilder;
 }

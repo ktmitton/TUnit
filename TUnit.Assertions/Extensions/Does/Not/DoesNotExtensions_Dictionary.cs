@@ -15,8 +15,8 @@ public static partial class DoesNotExtensions
         where TAnd : And<TDictionary, TAnd, TOr>, IAnd<TDictionary, TAnd, TOr>
         where TOr : Or<TDictionary, TAnd, TOr>, IOr<TDictionary, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(does.DoesNot(), new DelegateAssertCondition<TDictionary, TKey, TAnd, TOr>(
-            does.DoesNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue),
+        return AssertionConditionCombiner.Combine(does.AssertionBuilder, new DelegateAssertCondition<TDictionary, TKey, TAnd, TOr>(
+            does.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue),
             expected,
             (actual, _, _, _) =>
             {
@@ -31,8 +31,8 @@ public static partial class DoesNotExtensions
         where TAnd : And<TDictionary, TAnd, TOr>, IAnd<TDictionary, TAnd, TOr>
         where TOr : Or<TDictionary, TAnd, TOr>, IOr<TDictionary, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(does.DoesNot(), new DelegateAssertCondition<TDictionary, TValue, TAnd, TOr>(
-            does.DoesNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue),
+        return AssertionConditionCombiner.Combine(does.AssertionBuilder, new DelegateAssertCondition<TDictionary, TValue, TAnd, TOr>(
+            does.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue),
             expected,
             (actual, _, _, _) =>
             {

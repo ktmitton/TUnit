@@ -16,18 +16,18 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new NotEqualsAssertCondition<TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(null), TActual.Zero));
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new NotEqualsAssertCondition<TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(null), TActual.Zero));
     }
     
     public static BaseAssertCondition<TActual, TAnd, TOr> IsNotGreaterThan<TActual, TAnd, TOr>(this IIs<TActual, TAnd, TOr> isNot, TActual expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "") where TActual : INumber<TActual>
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
 
@@ -41,11 +41,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -59,11 +59,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -77,11 +77,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(doNotPopulateThisValue), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -95,11 +95,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -113,11 +113,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -131,11 +131,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 
@@ -149,11 +149,11 @@ public static partial class IsNotExtensions
         where TAnd : IAnd<TActual, TAnd, TOr>
         where TOr : IOr<TActual, TAnd, TOr>
     {
-        return AssertionConditionCombiner.Combine(isNot.IsNot(), new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.IsNot().AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
+        return AssertionConditionCombiner.Combine(isNot.AssertionBuilder, new DelegateAssertCondition<TActual, TActual, TAnd, TOr>(isNot.AssertionBuilder.AppendCallerMethod(null), default, (value, _, _, self) =>
             {
                 if (value is null)
                 {
-                    self.WithMessage((_, _) => $"{isNot.IsNot().AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
+                    self.WithMessage((_, _) => $"{isNot.AssertionBuilder.RawActualExpression ?? typeof(TActual).Name} is null");
                     return false;
                 }
                 

@@ -15,12 +15,7 @@ public class AsyncValueDelegateAssertionBuilder<TActual>
  {
     private readonly Func<Task<TActual>> _function;
 
-    Does<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IDoes<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Does() => new(this, ConnectorType.None, null);
-    DoesNot<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IDoes<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.DoesNot() => new(this, ConnectorType.None, null);
-    Is<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IIs<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Is() => new(this, ConnectorType.None, null);
-    IsNot<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IIs<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.IsNot() => new(this, ConnectorType.None, null);
-    Has<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IHas<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Has() => new(this, ConnectorType.None, null);
-    Throws<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IThrows<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.Throws() => new(this, ConnectorType.None, null);
+    private AssertionBuilderConnector<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> AssertionBuilderConnector => new(this, ConnectorType.None, null);
 
     internal AsyncValueDelegateAssertionBuilder(Func<Task<TActual>> function, string expressionBuilder) : base(expressionBuilder)
     {
@@ -51,4 +46,6 @@ public class AsyncValueDelegateAssertionBuilder<TActual>
         AssertionMessage = (AssertionMessageValueDelegate<TActual>) message;
         return this;
     }
+
+    AssertionBuilder<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>> IVerbAction<TActual, ValueDelegateAnd<TActual>, ValueDelegateOr<TActual>>.AssertionBuilder => AssertionBuilderConnector.AssertionBuilder;
 }

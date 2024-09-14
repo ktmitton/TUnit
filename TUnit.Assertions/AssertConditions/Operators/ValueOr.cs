@@ -1,4 +1,4 @@
-using TUnit.Assertions.AssertConditions.Interfaces;
+using TUnit.Assertions.AssertionBuilders;
 
 namespace TUnit.Assertions.AssertConditions.Operators;
 
@@ -9,11 +9,10 @@ public class ValueOr<TActual>
     {
     }
 
-    Is<TActual, ValueAnd<TActual>, ValueOr<TActual>> IIs<TActual, ValueAnd<TActual>, ValueOr<TActual>>.Is() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    IsNot<TActual, ValueAnd<TActual>, ValueOr<TActual>> IIs<TActual, ValueAnd<TActual>, ValueOr<TActual>>.IsNot() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    Has<TActual, ValueAnd<TActual>, ValueOr<TActual>> IHas<TActual, ValueAnd<TActual>, ValueOr<TActual>>.Has() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    Does<TActual, ValueAnd<TActual>, ValueOr<TActual>> IDoes<TActual, ValueAnd<TActual>, ValueOr<TActual>>.Does() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
-    DoesNot<TActual, ValueAnd<TActual>, ValueOr<TActual>> IDoes<TActual, ValueAnd<TActual>, ValueOr<TActual>>.DoesNot() => new(OtherAssertCondition.AssertionBuilder, ConnectorType.Or, OtherAssertCondition);
+    private AssertionBuilderConnector<TActual, ValueAnd<TActual>, ValueOr<TActual>> AssertionBuilderConnector => new(OtherAssertCondition.AssertionBuilder, ConnectorType.And, OtherAssertCondition);
+
+    public AssertionBuilder<TActual, ValueAnd<TActual>, ValueOr<TActual>> AssertionBuilder =>
+        AssertionBuilderConnector.AssertionBuilder;
     
     public static ValueOr<TActual> Create(BaseAssertCondition<TActual, ValueAnd<TActual>, ValueOr<TActual>> otherAssertCondition)
     {

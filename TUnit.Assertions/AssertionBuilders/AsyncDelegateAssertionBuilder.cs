@@ -12,7 +12,7 @@ public class AsyncDelegateAssertionBuilder
 {
     private readonly Func<Task> _function;
 
-    Throws<object?, DelegateAnd<object?>, DelegateOr<object?>> IThrows<object?, DelegateAnd<object?>, DelegateOr<object?>>.Throws() => new(this, ConnectorType.None, null);
+    private AssertionBuilderConnector<object?, DelegateAnd<object?>, DelegateOr<object?>> AssertionBuilderConnector => new(this, ConnectorType.None, null);
 
     internal AsyncDelegateAssertionBuilder(Func<Task> function, string expressionBuilder) : base(expressionBuilder)
     {
@@ -43,4 +43,6 @@ public class AsyncDelegateAssertionBuilder
         AssertionMessage = (AssertionMessageDelegate) message;
         return this;
     }
+
+    AssertionBuilder<object?, DelegateAnd<object?>, DelegateOr<object?>> IVerbAction<object?, DelegateAnd<object?>, DelegateOr<object?>>.AssertionBuilder => AssertionBuilderConnector.AssertionBuilder;
 }

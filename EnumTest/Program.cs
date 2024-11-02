@@ -1,5 +1,6 @@
 ﻿using EnumDefintion;
 using FluentAssertions;
+using TUnit.Core;
 
 namespace EnumTest;
 

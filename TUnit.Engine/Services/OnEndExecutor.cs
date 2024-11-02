@@ -4,48 +4,30 @@ using TUnit.Core;
 using TUnit.Core.Logging;
 using TUnit.Engine.CommandLineProviders;
 using TUnit.Engine.Extensions;
-using TUnit.Engine.Hooks;
 using TUnit.Engine.Json;
 using TUnit.Engine.Logging;
 
 namespace TUnit.Engine.Services;
 
-internal class OnEndExecutor
+internal class OnEndExecutor(
+    ICommandLineOptions commandLineOptions,
+    TUnitFrameworkLogger logger)
 {
-    private readonly ICommandLineOptions _commandLineOptions;
-    private readonly TUnitFrameworkLogger _logger;
-    private readonly StaticPropertyInjectorsOrchestrator _staticPropertyInjectorsOrchestrator;
-
-    public OnEndExecutor(ICommandLineOptions commandLineOptions, 
-        TUnitFrameworkLogger logger,
-        StaticPropertyInjectorsOrchestrator staticPropertyInjectorsOrchestrator)
-    {
-        _commandLineOptions = commandLineOptions;
-        _logger = logger;
-        _staticPropertyInjectorsOrchestrator = staticPropertyInjectorsOrchestrator;
-    }
-
     public async Task ExecuteAsync(TestSessionContext? testSessionContext)
     {
         try
         {
             await WriteJsonOutputFile(testSessionContext);
-            await DisposeStaticInjectableProperties();
         }
         catch (Exception e)
         {
-            await _logger.LogErrorAsync(e);
+            await logger.LogErrorAsync(e);
         }
-    }
-
-    private async Task DisposeStaticInjectableProperties()
-    {
-        await _staticPropertyInjectorsOrchestrator.DisposeAll();
     }
 
     private async Task WriteJsonOutputFile(TestSessionContext? testSessionContext)
     {
-        if (!_commandLineOptions.IsOptionSet(JsonOutputCommandProvider.OutputJson))
+        if (!commandLineOptions.IsOptionSet(JsonOutputCommandProvider.OutputJson))
         {
             return;
         }
@@ -60,23 +42,23 @@ internal class OnEndExecutor
         
             await JsonSerializer.SerializeAsync(file, jsonOutput, JsonContext.Default.TestSessionJson);
 
-            await _logger.LogInformationAsync($"TUnit JSON output saved to: {path}");
+            await logger.LogInformationAsync($"TUnit JSON output saved to: {path}");
         }
         catch (Exception e)
         {
-            await _logger.LogErrorAsync(e);
+            await logger.LogErrorAsync(e);
         }
     }
 
     private string GetFilename()
     {
         var prefix =
-            _commandLineOptions.TryGetOptionArgumentList(JsonOutputCommandProvider.OutputJsonFilenamePrefix,
+            commandLineOptions.TryGetOptionArgumentList(JsonOutputCommandProvider.OutputJsonFilenamePrefix,
                 out var prefixes)
                 ? prefixes.First()
                 : "tunit_jsonoutput_";
         
-        var filename = _commandLineOptions.TryGetOptionArgumentList(JsonOutputCommandProvider.OutputJsonFilename,
+        var filename = commandLineOptions.TryGetOptionArgumentList(JsonOutputCommandProvider.OutputJsonFilename,
             out var filenames)
             ? filenames.First()
             : Guid.NewGuid().ToString("N");

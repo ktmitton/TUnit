@@ -1,13 +1,19 @@
 ﻿namespace TUnit.Core;
 
-public static class EngineCancellationToken
+public class EngineCancellationToken : IDisposable
 {
-    internal static CancellationTokenSource CancellationTokenSource { get; private set; } = new();
-
-    public static CancellationToken Token => CancellationTokenSource.Token;
+    internal CancellationTokenSource CancellationTokenSource { get; private set; } = new();
     
-    internal static void Initialise(CancellationToken cancellationToken)
+    public CancellationToken Token { get; private set; }
+    
+    internal void Initialise(CancellationToken cancellationToken)
     {
         CancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        Token = CancellationTokenSource.Token;
+    }
+
+    public void Dispose()
+    {
+        CancellationTokenSource.Dispose();
     }
 }

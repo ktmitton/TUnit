@@ -1,6 +1,6 @@
 ﻿using TUnit.Assertions;
 using TUnit.Assertions.Extensions;
-using TUnit.Engine.Extensions;
+using TUnit.Core.Extensions;
 
 namespace TUnit.TestProject;
 

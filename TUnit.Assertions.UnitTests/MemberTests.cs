@@ -8,7 +8,7 @@ public class MemberTests
     [Test]
     public async Task Number_Truthy()
     {
-        var myClass = new MyClass()
+        var myClass = new MyClass
         {
             Number = 123,
             Text = "Blah",
@@ -31,10 +31,11 @@ public class MemberTests
         var exception = NUnitAssert.ThrowsAsync<TUnitAssertionException>(async () => await TUnitAssert.That(myClass).HasMember(x => x.Number).EqualTo(1));
         NUnitAssert.That(exception, Has.Message.EqualTo(
             """
-            Assert.That(myClass).HasMember(x => x.Number).EqualTo(1)
-            MyClass.Number:
-                Expected: 1
-                Received: 123
+            Expected myClass MyClass.Number to be equal to 1
+            
+            but received 123
+            
+            at Assert.That(myClass).HasMember(x => x.Number).EqualTo(1)
             """
             ));
     }
@@ -52,10 +53,11 @@ public class MemberTests
         var exception = NUnitAssert.ThrowsAsync<TUnitAssertionException>(async () => await TUnitAssert.That(myClass).HasMember(x => x.Nested.Nested.Nested.Number).EqualTo(1));
         NUnitAssert.That(exception, Has.Message.EqualTo(
             """
-            Assert.That(myClass).HasMember(x => x.Nested.Nested.Nested.Number).EqualTo(1)
-            MyClass.Number:
-                Expected: 1
-                Received: 123
+            Expected myClass MyClass.Number to be equal to 1
+            
+            but received 123
+            
+            at Assert.That(myClass).HasMember(x => x.Nested.Nested.Nested.Number).EqualTo(1)
             """
         ));
     }
@@ -68,10 +70,11 @@ public class MemberTests
         var exception = NUnitAssert.ThrowsAsync<TUnitAssertionException>(async () => await TUnitAssert.That(myClass).HasMember(x => x.Number).EqualTo(1));
         NUnitAssert.That(exception, Has.Message.EqualTo(
             """
-            Assert.That(myClass).HasMember(x => x.Number).EqualTo(1)
-            MyClass.Number:
-                Expected: 1
-                Received: Object `MyClass` was null
+            Expected myClass MyClass.Number to be equal to 1
+            
+            but Object `MyClass` was null
+            
+            at Assert.That(myClass).HasMember(x => x.Number).EqualTo(1)
             """
         ));
     }

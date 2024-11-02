@@ -1,8 +1,8 @@
-using AutoFixture;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
+using System.Diagnostics.CodeAnalysis;
 using TUnit.Core;
 
 namespace TUnit.Analyzers.Tests.Verifiers;
@@ -23,18 +23,17 @@ public static partial class CSharpAnalyzerVerifier<TAnalyzer>
         => CSharpAnalyzerVerifier<TAnalyzer, DefaultVerifier>.Diagnostic(descriptor);
 
     /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.VerifyAnalyzerAsync(string, DiagnosticResult[])"/>
-    public static async Task VerifyAnalyzerAsync(string source, params DiagnosticResult[] expected)
+    public static async Task VerifyAnalyzerAsync([StringSyntax("c#-test")] string source, params DiagnosticResult[] expected)
     {
         var test = new Test
         {
             TestCode = source,
-            ReferenceAssemblies = Net.Net80,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             TestState =
             {
                 AdditionalReferences =
                 {
                     typeof(TUnitAttribute).Assembly.Location,
-                    typeof(Fixture).Assembly.Location,
                 },
             },
         };

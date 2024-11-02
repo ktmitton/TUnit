@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using FluentAssertions.Execution;
 using Microsoft.Extensions.Logging;
 using ModularPipelines.Attributes;
@@ -28,14 +27,14 @@ public abstract class TestModule : Module<TestResult>
     protected Task<TestResult?> RunTestsWithFilter(IPipelineContext context, string filter,
         List<Action<TestResult>> assertions,
         CancellationToken cancellationToken = default,
-        [CallerArgumentExpression("assertions")] string assertionExpression = "")
+        [CallerArgumentExpression(nameof(assertions))] string assertionExpression = "")
     {
         return RunTestsWithFilter(context, filter, assertions, new RunOptions(), cancellationToken, assertionExpression);
     }
 
     protected async Task<TestResult?> RunTestsWithFilter(IPipelineContext context, string filter,
         List<Action<TestResult>> assertions, RunOptions runOptions, CancellationToken cancellationToken = default,
-        [CallerArgumentExpression("assertions")] string assertionExpression = "")
+        [CallerArgumentExpression(nameof(assertions))] string assertionExpression = "")
     {
         await SubModule("WithoutAot", async () =>
         {
@@ -70,6 +69,7 @@ public abstract class TestModule : Module<TestResult>
             CommandLogging = CommandLogging.None,
             Arguments =
             [
+                "-f", "net8.0",
                 "--treenode-filter", filter, 
                 "--report-trx", "--report-trx-filename", trxFilename,
                 // "--diagnostic", "--diagnostic-output-fileprefix", $"log_{GetType().Name}", 
@@ -249,15 +249,8 @@ public abstract class TestModule : Module<TestResult>
     }
 }
 
-public record TestResult
+public record TestResult(DotNetTestResult TrxReport)
 {
-    public DotNetTestResult TrxReport { get; }
-
-    public TestResult(DotNetTestResult trxReport)
-    {
-        TrxReport = trxReport;
-    }
-
     public int Failed => TrxReport.UnitTestResults.Count(x => x.Outcome == TestOutcome.Failed);
     public int Passed => TrxReport.UnitTestResults.Count(x => x.Outcome == TestOutcome.Passed);
     public int Skipped => TrxReport.UnitTestResults.Count(x => x.Outcome == TestOutcome.NotExecuted);

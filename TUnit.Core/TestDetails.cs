@@ -7,15 +7,15 @@ namespace TUnit.Core;
 public record TestDetails<
 [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)] 
     TClassType
-> : TestDetails
+>() : TestDetails(typeof(TClassType)) where TClassType : class
 {
     [JsonIgnore]
-    public required ResettableLazy<TClassType?> LazyClassInstance { get; init; }
+    public required ResettableLazy<TClassType> LazyClassInstance { get; init; }
 
-    public override object? ClassInstance => LazyClassInstance.Value;
+    public override object ClassInstance => LazyClassInstance.Value;
 } 
 
-public abstract record TestDetails
+public abstract record TestDetails(Type ClassType)
 {
     public required string TestId { get; init; }
     
@@ -26,22 +26,22 @@ public abstract record TestDetails
     
     public required Type[] TestClassParameterTypes { get; init; }
     public required object?[] TestClassArguments { get; init; }
-    public required object?[] TestClassProperties { get; init; }
-    
-    public required IReadOnlyList<string> Categories { get; init; }
+    public required object?[] TestClassInjectedPropertyArguments { get; init; }
+
+    internal readonly List<string> MutableCategories = [];
+    public IReadOnlyList<string> Categories => MutableCategories;
     
     public required MethodInfo MethodInfo { get; init; }
-    public required Type ClassType { get; init; }
     public abstract object? ClassInstance { get; }
     public required int CurrentRepeatAttempt { get; init; }
     public required int RepeatLimit { get; init; }
-    public required int RetryLimit { get; init; }
+    public int RetryLimit { get; internal set; }
 
-    public required TimeSpan? Timeout { get; init; }
+    public TimeSpan? Timeout { get; internal set; }
     
-    public required IReadOnlyList<string>? NotInParallelConstraintKeys { get; init; }
+    public IReadOnlyList<string>? NotInParallelConstraintKeys { get; internal set; }
     public IReadOnlyDictionary<string, string> CustomProperties => InternalCustomProperties;
-    public required Dictionary<string, string> InternalCustomProperties { get; init; }
+    internal Dictionary<string, string> InternalCustomProperties { get; } = [];
 
     [JsonIgnore]
     public required Attribute[] AssemblyAttributes { get; init; }
@@ -53,25 +53,22 @@ public abstract record TestDetails
     public required Attribute[] TestAttributes { get; init; }
     
     [JsonIgnore]
+    public required Attribute[] DataAttributes { get; init; }
+    
+    [JsonIgnore]
     public required Attribute[] Attributes { get; init; }
 
     [JsonIgnore]
-    internal RetryAttribute? RetryAttribute => Attributes.OfType<RetryAttribute>().FirstOrDefault();
+    internal Func<TestContext, Exception, int, Task<bool>>? RetryLogic { get; set; }
     
     public required Type ReturnType { get; init; }
-    
-    public required int Order { get; init; }
+
+    public int Order { get; internal set; } = int.MaxValue / 2;
     public required string TestFilePath { get; init; }
     public required int TestLineNumber { get; init; }
-    public required string DisplayName { get; init; }
+    internal string? DisplayName { get; set; }
     
-    public required IParallelLimit? ParallelLimit { get; init; }
-
-    [JsonIgnore] internal TestData[] InternalTestClassArguments { get; init; } = null!;
-
-    [JsonIgnore] internal TestData[] InternalTestClassProperties { get; set; } = null!;
-
-    [JsonIgnore] internal TestData[] InternalTestMethodArguments { get; init; } = null!;
+    public IParallelLimit? ParallelLimit { get; internal set; }
 
 
     internal bool IsSameTest(TestDetails testDetails) => TestName == testDetails.TestName &&

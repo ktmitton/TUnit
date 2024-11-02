@@ -4,7 +4,6 @@ namespace TUnit.Core;
 
 public class DiscoveredTestContext
 {
-    internal Dictionary<string, string>? Properties;
     public TestContext TestContext { get; }
     public TestDetails TestDetails => TestContext.TestDetails;
 
@@ -15,7 +14,33 @@ public class DiscoveredTestContext
 
     public void AddProperty(string key, string value)
     {
-        var properties = Properties ??= new Dictionary<string, string>();
-        properties.Add(key, value);
+        TestContext.TestDetails.InternalCustomProperties.Add(key, value);
+    }
+    
+    public void SetDisplayName(string displayName)
+    {
+        TestContext.TestDetails.DisplayName = displayName;
+    }
+    
+    public void AddArgumentDisplayFormatter(ArgumentDisplayFormatter formatter)
+    {
+        TestContext.ArgumentDisplayFormatters.Add(formatter);
+    }
+
+    public void SetNotInParallelConstraints(string[] constraintKeys, int order)
+    {
+        TestContext.TestDetails.NotInParallelConstraintKeys = constraintKeys;
+        TestContext.TestDetails.Order = order;
+    }
+    
+    public void SetRetryCount(int times)
+    {
+        SetRetryCount(times, (_, _, _) => Task.FromResult(true));
+    }
+    
+    public void SetRetryCount(int times, Func<TestContext, Exception, int, Task<bool>> shouldRetry)
+    {
+        TestContext.TestDetails.RetryLimit = times;
+        TestContext.TestDetails.RetryLogic = shouldRetry;
     }
 }

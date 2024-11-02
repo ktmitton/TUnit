@@ -16,7 +16,9 @@ public class ClassDataSourceAnalyzer : ConcurrentDiagnosticAnalyzer
             Rules.Argument_Count_Not_Matching_Parameter_Count,
             Rules.WrongArgumentTypeTestDataSource,
             Rules.NoMatchingParameterClassDataSource,
-            Rules.ConstructorMustBeParameterless
+            Rules.ConstructorMustBeParameterless,
+            Rules.PropertyRequiredNotSet,
+            Rules.MustHavePropertySetter
         );
 
     protected override void InitializeInternal(AnalysisContext context)
@@ -35,7 +37,7 @@ public class ClassDataSourceAnalyzer : ConcurrentDiagnosticAnalyzer
 
         if (!context.Symbol.GetAttributes().Any(x =>
                 x.AttributeClass?.ToDisplayString(DisplayFormats.FullyQualifiedNonGenericWithGlobalPrefix)
-                == WellKnown.AttributeFullyQualifiedClasses.ClassDataSource))
+                == WellKnown.AttributeFullyQualifiedClasses.ClassDataSource.WithGlobalPrefix))
         {
             return;
         }
@@ -50,6 +52,18 @@ public class ClassDataSourceAnalyzer : ConcurrentDiagnosticAnalyzer
             parameterOrPropertyTypeSymbols = namedTypeSymbol.Constructors.FirstOrDefault()?.Parameters.Select(x => x.Type).ToImmutableArray() ?? ImmutableArray<ITypeSymbol>.Empty;
         } else if (context.Symbol is IPropertySymbol propertySymbol)
         {
+            if (propertySymbol is { IsStatic: false, IsRequired: false })
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Rules.PropertyRequiredNotSet, propertySymbol.Locations.FirstOrDefault()));
+                return;
+            }
+            
+            if (propertySymbol is { IsStatic: true, SetMethod: null })
+            {
+                context.ReportDiagnostic(Diagnostic.Create(Rules.MustHavePropertySetter, propertySymbol.Locations.FirstOrDefault()));
+                return;
+            }
+            
             parameterOrPropertyTypeSymbols = ImmutableArray.Create(propertySymbol.Type);
         }
 
@@ -60,7 +74,7 @@ public class ClassDataSourceAnalyzer : ConcurrentDiagnosticAnalyzer
         }
         
         foreach (var attributeData in context.Symbol.GetAttributes().Where(x => x.AttributeClass?.ToDisplayString(DisplayFormats.FullyQualifiedNonGenericWithGlobalPrefix)
-                                                                    == WellKnown.AttributeFullyQualifiedClasses.ClassDataSource))
+                                                                    == WellKnown.AttributeFullyQualifiedClasses.ClassDataSource.WithGlobalPrefix))
         {
             var type = attributeData.ConstructorArguments.FirstOrDefault().Value as INamedTypeSymbol
                        ?? attributeData.AttributeClass!.TypeArguments.First();

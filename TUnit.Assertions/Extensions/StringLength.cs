@@ -5,20 +5,13 @@ using TUnit.Assertions.AssertionBuilders;
 
 namespace TUnit.Assertions.Extensions;
 
-public class StringLength
+public class StringLength(IValueSource<string> valueSource)
 {
-    private readonly IValueSource<string> _valueSource;
-    protected AssertionBuilder<string> AssertionBuilder { get; }
+    protected AssertionBuilder<string> AssertionBuilder { get; } = valueSource.AssertionBuilder.AppendExpression("HasLength");
 
-    public StringLength(IValueSource<string> valueSource)
+    public InvokableValueAssertionBuilder<string> EqualTo(int expected, [CallerArgumentExpression(nameof(expected))] string doNotPopulateThisValue = "")
     {
-        _valueSource = valueSource;
-        AssertionBuilder = valueSource.AssertionBuilder.AppendExpression("HasLength");
-    }
-
-    public InvokableValueAssertionBuilder<string> EqualTo(int expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "")
-    {
-        return _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(expected, (actual, _, _, self) =>
+        return valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(expected, (actual, _, self) =>
             {
                 if (actual is null)
                 {
@@ -29,13 +22,14 @@ public class StringLength
                 return actual.Length == expected;
             },
             (@string, _, _) =>
-                $"\"{@string}\" was {@string?.Length} characters long but expected to be equal to {expected}")
+                $"was {@string?.Length} characters long",
+            $"to be equal to {expected}")
             , [doNotPopulateThisValue]);
     }
 
     public InvokableValueAssertionBuilder<string> Zero =>
-        _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(0,
-                (@string, _, _, self) =>
+        valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(0,
+                (@string, _, self) =>
                 {
                     if (@string is null)
                     {
@@ -46,11 +40,12 @@ public class StringLength
                     return @string.Length == 0;
                 },
                 (@string, _, _) =>
-                    $"\"{@string}\" was {@string?.Length} characters long but expected to be equal to {0}")
+                    $"\"{@string}\" was {@string?.Length} characters long but expected to be equal to {0}",
+                $"have length of 0")
             , []);
 
     public InvokableValueAssertionBuilder<string> Positive =>
-        _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(default, (@string, _, _, self) =>
+        valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(default, (@string, _, self) =>
             {
                 if (@string is null)
                 {
@@ -61,14 +56,14 @@ public class StringLength
                 return @string.Length > 0;
             },
             (@string, _, _) =>
-                $"\"{@string}\" was {@string?.Length} characters long but expected to empty"
-        ), []);
+                $"\"is empty",
+            $"have a positive string length"), []);
 
 
-    public InvokableValueAssertionBuilder<string> GreaterThan(int expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "")
+    public InvokableValueAssertionBuilder<string> GreaterThan(int expected, [CallerArgumentExpression(nameof(expected))] string doNotPopulateThisValue = "")
     {
-        return _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(expected,
-            (@string, _, _, self) =>
+        return valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(expected,
+            (@string, _, self) =>
             {
                 if (@string is null)
                 {
@@ -79,13 +74,14 @@ public class StringLength
                 return @string.Length > expected;
             },
             (@string, _, _) =>
-                $"\"{@string}\" was {@string?.Length} characters long but expected to be greater than {expected}")
+                $"was {@string?.Length} characters long",
+            $"to be greater than {expected}")
             , [doNotPopulateThisValue]);
     }
 
-    public InvokableValueAssertionBuilder<string> GreaterThanOrEqualTo(int expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "")
+    public InvokableValueAssertionBuilder<string> GreaterThanOrEqualTo(int expected, [CallerArgumentExpression(nameof(expected))] string doNotPopulateThisValue = "")
     {
-        return _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(expected, (@string, _, _, self) =>
+        return valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(expected, (@string, _, self) =>
             {
                 if (@string is null)
                 {
@@ -96,13 +92,14 @@ public class StringLength
                 return @string.Length >= expected;
             },
             (@string, _, _) =>
-                $"\"{@string}\" was {@string?.Length} characters long but expected to be greater than or equal to {expected}")
+                $"was {@string?.Length} characters long",
+            $"to be greater than or equal to {expected}")
             , [doNotPopulateThisValue]);
     }
 
-    public InvokableValueAssertionBuilder<string> LessThan(int expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "")
+    public InvokableValueAssertionBuilder<string> LessThan(int expected, [CallerArgumentExpression(nameof(expected))] string doNotPopulateThisValue = "")
     {
-        return _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(expected, (@string, _, _, self) =>
+        return valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(expected, (@string, _, self) =>
             {
                 if (@string is null)
                 {
@@ -113,13 +110,14 @@ public class StringLength
                 return @string.Length < expected;
             },
             (@string, _, _) =>
-                $"\"{@string}\" was {@string?.Length} characters long but expected to be less than {expected}")
+                $"was {@string?.Length} characters long",
+            $"to be less than {expected}")
             , [doNotPopulateThisValue]);
     }
 
-    public InvokableValueAssertionBuilder<string> LessThanOrEqualTo(int expected, [CallerArgumentExpression("expected")] string doNotPopulateThisValue = "")
+    public InvokableValueAssertionBuilder<string> LessThanOrEqualTo(int expected, [CallerArgumentExpression(nameof(expected))] string doNotPopulateThisValue = "")
     {
-        return _valueSource.RegisterAssertion(new DelegateAssertCondition<string, int>(expected, (@string, _, _, self) =>
+        return valueSource.RegisterAssertion(new FuncValueAssertCondition<string, int>(expected, (@string, _, self) =>
             {
                 if (@string is null)
                 {
@@ -130,7 +128,8 @@ public class StringLength
                 return @string.Length <= expected;
             },
             (@string, _, _) =>
-                $"\"{@string}\" was {@string?.Length} characters long but expected to be less than or equal to {expected}")
+                $"was {@string?.Length} characters long",
+            $"to be less than or equal to {expected}")
             , [doNotPopulateThisValue]);
     }
 }

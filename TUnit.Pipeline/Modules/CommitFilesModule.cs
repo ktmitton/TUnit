@@ -17,14 +17,23 @@ namespace TUnit.Pipeline.Modules;
 [RunOnLinuxOnly]
 [DependsOn<PackTUnitFilesModule>]
 [DependsOn<TestNugetPackageModule>]
-[DependsOn<GenerateReadMeModule>]
+[DependsOn<GenerateReadMeModule>(IgnoreIfNotRegistered = true)]
 [SkipIfDependabot]
+[ModuleCategory("ReadMe")]
 public class CommitFilesModule : Module<CommandResult>
 {
     protected override async Task<SkipDecision> ShouldSkip(IPipelineContext context)
     {
-        var generateReadMeModule = await GetModule<GenerateReadMeModule>();
-        return generateReadMeModule.Value == null;
+        var generateReadMeModule = GetModuleIfRegistered<GenerateReadMeModule>();
+
+        if (generateReadMeModule is null)
+        {
+            return "Nothing to commit";
+        }
+
+        var result = await generateReadMeModule;
+        
+        return result.SkipDecision.ShouldSkip || !result.HasValue;
     }
 
     protected override async Task<CommandResult?> ExecuteAsync(IPipelineContext context, CancellationToken cancellationToken)

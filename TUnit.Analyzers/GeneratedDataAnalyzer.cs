@@ -1,11 +1,14 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using TUnit.Analyzers.EqualityComparers;
 using TUnit.Analyzers.Extensions;
 using TUnit.Analyzers.Helpers;
 
 namespace TUnit.Analyzers;
 
+[SuppressMessage("MicrosoftCodeAnalysisCorrectness", "RS1024:Symbols should be compared for equality")]
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class GeneratedDataAnalyzer : ConcurrentDiagnosticAnalyzer
 {
@@ -55,14 +58,19 @@ public class GeneratedDataAnalyzer : ConcurrentDiagnosticAnalyzer
             var selfAndBaseTypes = attributeData.AttributeClass?.GetSelfAndBaseTypes() ?? [];
             
             var baseGeneratorAttribute = selfAndBaseTypes
-                .FirstOrDefault(x => x.Interfaces.Any(i => i.GloballyQualified() == WellKnown.AttributeFullyQualifiedClasses.IDataSourceGeneratorAttribute));
+                .FirstOrDefault(x => x.Interfaces.Any(i => i.GloballyQualified() == WellKnown.AttributeFullyQualifiedClasses.IDataSourceGeneratorAttribute.WithGlobalPrefix));
 
             if (baseGeneratorAttribute is null)
             {
                 continue;
             }
 
-            if (parameterOrPropertyTypes.SequenceEqual(baseGeneratorAttribute.TypeArguments, SymbolEqualityComparer.Default))
+            if (parameterOrPropertyTypes.Any(x => x.IsGenericDefinition()))
+            {
+                continue;
+            }
+
+            if (parameterOrPropertyTypes.SequenceEqual(baseGeneratorAttribute.TypeArguments, new SelfOrBaseEqualityComparer(context.Compilation)))
             {
                 continue;
             }

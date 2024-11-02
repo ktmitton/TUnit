@@ -3,18 +3,12 @@
 namespace TUnit.Core;
 
 internal class DiscoveredTest<
-    [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)] 
+    [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis
+        .DynamicallyAccessedMemberTypes.All)]
     TTestClass
-    > : DiscoveredTest
+>(ResettableLazy<TTestClass> resettableLazyTestClassFactory) : DiscoveredTest where TTestClass : class
 {
-    private readonly ResettableLazy<TTestClass> _resettableLazyTestClassFactory;
-
-    public DiscoveredTest(ResettableLazy<TTestClass> resettableLazyTestClassFactory)
-    {
-        _resettableLazyTestClassFactory = resettableLazyTestClassFactory;
-    }
-    
-    public TTestClass TestClass => _resettableLazyTestClassFactory.Value;
+    public TTestClass TestClass => resettableLazyTestClassFactory.Value;
     
     public required Func<TTestClass, CancellationToken, Task> TestBody { get; init; }
 
@@ -25,16 +19,15 @@ internal class DiscoveredTest<
     
     public override async Task ResetTestInstance()
     {
-        await _resettableLazyTestClassFactory.ResetLazy();
+        await resettableLazyTestClassFactory.ResetLazy();
     }
+
+    public override IClassConstructor? ClassConstructor => resettableLazyTestClassFactory.ClassConstructor;
 }
 
 internal abstract class DiscoveredTest
 {
     public required TestContext TestContext { get; init; }
-    
-    public required IBeforeTestAttribute[] BeforeTestAttributes { get; init; }
-    public required IAfterTestAttribute[] AfterTestAttributes { get; init; }
 
     public abstract Task ExecuteTest(CancellationToken cancellationToken);
 
@@ -42,9 +35,9 @@ internal abstract class DiscoveredTest
     
     public TestDetails TestDetails => TestContext.TestDetails;
     
-    public required ITestExecutor TestExecutor { get; internal set; }
+    public ITestExecutor TestExecutor { get; internal set; } = DefaultExecutor.Instance;
     
-    public required IClassConstructor? ClassConstructor { get; set; }
+    public abstract IClassConstructor? ClassConstructor { get; }
     
     public IHookExecutor? HookExecutor { get; internal set; }
     

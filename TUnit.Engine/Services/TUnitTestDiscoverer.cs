@@ -1,41 +1,89 @@
-﻿using Microsoft.Testing.Platform.Logging;
+﻿using Microsoft.Testing.Platform.Extensions;
+using Microsoft.Testing.Platform.Extensions.Messages;
+using Microsoft.Testing.Platform.Extensions.TestFramework;
+using Microsoft.Testing.Platform.Logging;
 using Microsoft.Testing.Platform.Requests;
 using TUnit.Core;
+using TUnit.Engine.Hooks;
+using TUnit.Engine.Models;
 
 namespace TUnit.Engine.Services;
 
-internal class TUnitTestDiscoverer
+internal class TUnitTestDiscoverer(
+    HooksCollector hooksCollector,
+    TestsConstructor testsConstructor,
+    TestFilterService testFilterService,
+    TestGrouper testGrouper,
+    TestRegistrar testRegistrar,
+    TestDiscoveryHookOrchestrator testDiscoveryHookOrchestrator,
+    ITUnitMessageBus tUnitMessageBus,
+    ILoggerFactory loggerFactory,
+    IExtension extension) : IDataProducer
 {
-    private readonly TestsLoader _testsLoader;
-    private readonly TestFilterService _testFilterService;
-    private readonly ILogger<TUnitTestDiscoverer> _logger;
+    private readonly ILogger<TUnitTestDiscoverer> _logger = loggerFactory.CreateLogger<TUnitTestDiscoverer>();
+    
+    private IReadOnlyCollection<DiscoveredTest>? _cachedTests;
 
-    public TUnitTestDiscoverer(TestsLoader testsLoader, TestFilterService testFilterService, ILoggerFactory loggerFactory)
+    public IReadOnlyCollection<DiscoveredTest> GetCachedTests()
     {
-        _testsLoader = testsLoader;
-        _testFilterService = testFilterService;
-        _logger = loggerFactory.CreateLogger<TUnitTestDiscoverer>();
+        return _cachedTests!;
     }
     
-    public DiscoveredTest[] DiscoverTests(TestExecutionRequest? discoverTestExecutionRequest, CancellationToken cancellationToken)
+    public async Task<GroupedTests> FilterTests(ExecuteRequestContext context, string? stringTestFilter, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        
-        var tests = _testsLoader.GetTests();
+                
+        var allDiscoveredTests = _cachedTests ??= await DiscoverTests();
 
-        var discoveredTests = _testFilterService.FilterTests(discoverTestExecutionRequest?.Filter, tests).ToArray();
+        var executionRequest = context.Request as TestExecutionRequest;
         
-        _logger.LogTrace($"Found {discoveredTests.Length} tests after filtering.");
+        var filteredTests = testFilterService.FilterTests(executionRequest?.Filter, allDiscoveredTests).ToArray();
         
-        return discoveredTests;
+        await _logger.LogTraceAsync($"Found {filteredTests.Length} tests after filtering.");
+        
+        var organisedTests = testGrouper.OrganiseTests(filteredTests);
+        
+        if (context.Request is TestExecutionRequest)
+        {
+            await RegisterInstances(organisedTests);
+        }
+
+        return organisedTests;
     }
 
-    public IReadOnlyCollection<FailedInitializationTest> GetFailedToInitializeTests()
+    private async Task RegisterInstances(GroupedTests organisedTests)
     {
-        var failedToInitializeTests = TestDictionary.GetFailedToInitializeTests();
-
-        _logger.LogTrace($"{failedToInitializeTests.Length} tests failed to initialize.");
-        
-        return failedToInitializeTests;
+        foreach (var test in organisedTests.AllValidTests)
+        {
+            await testRegistrar.RegisterInstance(discoveredTest: test,
+                onFailureToInitialize: exception => tUnitMessageBus.Failed(test.TestContext, exception, default)
+            );
+        }
     }
+
+    private async Task<IReadOnlyCollection<DiscoveredTest>> DiscoverTests()
+    {
+        hooksCollector.CollectDiscoveryHooks();
+        
+        await testDiscoveryHookOrchestrator.ExecuteBeforeHooks();
+        
+        var allDiscoveredTests = testsConstructor.GetTests().ToArray();
+
+        await testDiscoveryHookOrchestrator.ExecuteAfterHooks(allDiscoveredTests);
+        
+        hooksCollector.CollectHooks();
+
+        return allDiscoveredTests;
+    }
+
+    public Task<bool> IsEnabledAsync()
+    {
+        return extension.IsEnabledAsync();
+    }
+
+    public string Uid => extension.Uid;
+    public string Version => extension.Version;
+    public string DisplayName => extension.DisplayName;
+    public string Description => extension.Description;
+    public Type[] DataTypesProduced => [typeof(TestNodeUpdateMessage)];
 }

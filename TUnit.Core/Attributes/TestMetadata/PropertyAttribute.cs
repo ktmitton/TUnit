@@ -1,14 +1,15 @@
-﻿namespace TUnit.Core;
+﻿using TUnit.Core.Interfaces;
+
+namespace TUnit.Core;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Assembly, AllowMultiple = true)]
-public class PropertyAttribute : TUnitAttribute
+public class PropertyAttribute(string name, string value) : TUnitAttribute, ITestDiscoveryEventReceiver
 {
-    public string Name { get; }
-    public string Value { get; }
-
-    public PropertyAttribute(string name, string value)
+    public string Name { get; } = name;
+    public string Value { get; } = value;
+    
+    public void OnTestDiscovery(DiscoveredTestContext discoveredTestContext)
     {
-        Name = name;
-        Value = value;
+        discoveredTestContext.AddProperty(Name, Value);
     }
 }

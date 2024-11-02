@@ -3,20 +3,12 @@
 namespace TUnit.Core;
 
 [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method)]
-public sealed class ParallelLimiterAttribute<TParallelLimit> : ParallelLimiterAttribute
+public sealed class ParallelLimiterAttribute<TParallelLimit> : TUnitAttribute, ITestRegisteredEventReceiver
     where TParallelLimit : IParallelLimit, new()
 {
-    public ParallelLimiterAttribute() : base(typeof(TParallelLimit))
+    public ValueTask OnTestRegistered(TestRegisteredContext testRegisteredContext)
     {
+        testRegisteredContext.SetParallelLimiter(new TParallelLimit());
+        return ValueTask.CompletedTask;
     }
-}
-
-public class ParallelLimiterAttribute : TUnitAttribute
-{
-    public Type Type { get; }
-
-    internal ParallelLimiterAttribute(Type type)
-    {
-        Type = type;
-    }
-}
+};

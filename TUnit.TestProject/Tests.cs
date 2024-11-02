@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using TUnit.Assertions;
 using TUnit.Assertions.Extensions;
-using TUnit.Assertions.Extensions.Throws;
 
 namespace TUnit.TestProject;
 
@@ -204,7 +203,7 @@ public class Tests
     [Category("Fail")]
     public async Task Throws1()
     {
-        await Assert.That(() => new string([])).ThrowsException().OfAnyType();
+        await Assert.That(() => new string([])).ThrowsException();
     }
 
     [Test]
@@ -214,14 +213,14 @@ public class Tests
         await Assert.That(async () =>
         {
             await Task.Yield();
-        }).ThrowsException().OfAnyType();
+        }).ThrowsException();
     }
 
     [Test]
     [Category("Pass")]
     public async Task Throws3()
     {
-        await Assert.That(() => throw new ApplicationException()).ThrowsException().OfAnyType();
+        await Assert.That(() => throw new ApplicationException()).ThrowsException();
     }
 
     [Test]
@@ -301,7 +300,7 @@ public class Tests
     {
         var list = new List<int> { 1, 2, 3 };
         
-        await using (Assert.Multiple())
+        using (Assert.Multiple())
         {
             await Assert.That(list).IsEquivalentTo([1, 2, 3, 4, 5]);
             await Assert.That(list).HasCount().EqualTo(5);
@@ -332,7 +331,7 @@ public class Tests
         var one = "";
         var two = "Foo bar!";
         
-        await using (Assert.Multiple())
+        using (Assert.Multiple())
         {
             await Assert.That(one).IsNull().Or.IsEmpty();
             await Assert.That(two).IsEqualTo("Foo bar").Or.IsNull();

@@ -1,6 +1,4 @@
-﻿using TUnit.Assertions.Extensions.Throws;
-
-namespace TUnit.Assertions.UnitTests;
+﻿namespace TUnit.Assertions.UnitTests;
 
 public class ExceptionAssertionTests
 {
@@ -9,11 +7,11 @@ public class ExceptionAssertionTests
     {
         await TUnitAssert.That(InnerExceptionThrower.Throw)
             .ThrowsException()
-            .With.InnerException
-            .With.InnerException
-            .With.InnerException
-            .With.InnerException
-            .With.InnerException
-            .With.Message.EqualTo("Message 6");
+            .WithInnerException()
+            .WithInnerException()
+            .WithInnerException()
+            .WithInnerException()
+            .WithInnerException()
+            .WithMessage("Message 6");
     }
 }

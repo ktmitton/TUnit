@@ -37,12 +37,12 @@ public class ClassParametersAnalyzer : ConcurrentDiagnosticAnalyzer
             return;
         }
 
-        if (!namedTypeSymbol.IsTestClass())
+        if (!namedTypeSymbol.IsTestClass(context.Compilation))
         {
             return;
         }
         
-        if (!namedTypeSymbol.HasDataDrivenAttributes())
+        if (!namedTypeSymbol.GetSelfAndBaseTypes().Any(x => x.HasDataDrivenAttributes()))
         {
             context.ReportDiagnostic(Diagnostic.Create(Rules.NoDataSourceProvided, namedTypeSymbol.Locations.FirstOrDefault()));
         }

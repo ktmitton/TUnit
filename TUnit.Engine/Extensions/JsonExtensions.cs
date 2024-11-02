@@ -1,4 +1,5 @@
 ﻿using TUnit.Core;
+using TUnit.Core.Extensions;
 using TUnit.Engine.Json;
 
 namespace TUnit.Engine.Extensions;
@@ -41,7 +42,7 @@ public static class JsonExtensions
             Result = context.Result?.ToJsonModel(),
             Timeout = context.TestDetails.Timeout,
             CustomProperties = context.TestDetails.CustomProperties,
-            DisplayName = context.TestDetails.DisplayName,
+            DisplayName = context.GetTestDisplayName(),
             ObjectBag = context.ObjectBag,
             RetryLimit = context.TestDetails.RetryLimit,
             ReturnType = context.TestDetails.ReturnType.FullName,

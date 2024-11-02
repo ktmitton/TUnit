@@ -33,12 +33,12 @@ public static class TypeExtensions
             .Any(x => x.GloballyQualified() == typeName);
     }
     
-    public static bool IsTestClass(this INamedTypeSymbol namedTypeSymbol)
+    public static bool IsTestClass(this INamedTypeSymbol namedTypeSymbol, Compilation compilation)
     {
         return namedTypeSymbol
             .GetMembers()
             .OfType<IMethodSymbol>()
-            .Any(x => x.IsTestMethod());
+            .Any(x => x.IsTestMethod(compilation));
     }
     
     public static bool IsEnumerable(this ITypeSymbol type, SymbolAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? innerType)
@@ -71,4 +71,19 @@ public static class TypeExtensions
     
     public static string GloballyQualifiedNonGeneric(this ITypeSymbol typeSymbol) =>
         typeSymbol.ToDisplayString(DisplayFormats.FullyQualifiedNonGenericWithGlobalPrefix);
+    
+    public static bool IsGenericDefinition(this ITypeSymbol typeSymbol)
+    {
+        if (typeSymbol is ITypeParameterSymbol)
+        {
+            return true;
+        }
+        
+        if (typeSymbol is not INamedTypeSymbol namedTypeSymbol)
+        {
+            return false;
+        }
+
+        return namedTypeSymbol.TypeArguments.Any(IsGenericDefinition);
+    }
 }

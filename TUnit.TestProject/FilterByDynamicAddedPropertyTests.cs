@@ -10,7 +10,7 @@ public class FilterByDynamicAddedPropertyTests
     {
     }
     
-    public class MyDynamicallyAddedPropertyAttribute : Attribute, IOnTestDiscoveryAttribute
+    public class MyDynamicallyAddedPropertyAttribute : Attribute, ITestDiscoveryEventReceiver
     {
         public void OnTestDiscovery(DiscoveredTestContext discoveredTestContext)
         {

@@ -2,25 +2,47 @@
 
 namespace TUnit.Core;
 
+public class TestRegisteredContext : BeforeTestContext
+{
+    internal TestRegisteredContext(DiscoveredTest discoveredTest) : base(discoveredTest)
+    {
+    }
+
+    public void SetParallelLimiter(IParallelLimit parallelLimit)
+    {
+        DiscoveredTest.TestDetails.ParallelLimit = parallelLimit;
+    }
+
+    public void SkipTest(string reason)
+    {
+        DiscoveredTest.TestContext.SkipReason = reason;
+    }
+}
+
 public class BeforeTestContext
 {
-    private readonly DiscoveredTest _discoveredTest;
+    internal readonly DiscoveredTest DiscoveredTest;
 
     internal BeforeTestContext(DiscoveredTest discoveredTest)
     {
-        _discoveredTest = discoveredTest;
+        DiscoveredTest = discoveredTest;
     }
 
-    public TestContext TestContext => _discoveredTest.TestContext;
+    public TestContext TestContext => DiscoveredTest.TestContext;
     public TestDetails TestDetails => TestContext.TestDetails;
 
     public void SetTestExecutor(ITestExecutor testExecutor)
     {
-        _discoveredTest.TestExecutor = testExecutor;
+        DiscoveredTest.TestExecutor = testExecutor;
     }
     
     public void SetHookExecutor(IHookExecutor hookExecutor)
     {
-        _discoveredTest.HookExecutor = hookExecutor;
+        DiscoveredTest.HookExecutor = hookExecutor;
+    }
+    
+    public void AddLinkedCancellationToken(CancellationToken cancellationToken)
+    {
+        DiscoveredTest.TestContext.LinkedCancellationTokens.Add(cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
-﻿using EnumerableAsyncProcessor.Extensions;
-using ModularPipelines.Attributes;
+﻿using ModularPipelines.Attributes;
 using ModularPipelines.Context;
 using ModularPipelines.DotNet.Extensions;
 using ModularPipelines.DotNet.Options;
@@ -23,9 +22,12 @@ public class PackTUnitFilesModule : Module<List<PackedProject>>
         var version = versionResult.Value!;
 
         var packageVersion = version.SemVer!;
+        
+        var packedProjects = new List<PackedProject>();
 
-        await projects.Value!.SelectAsync(
-            async project => await context.DotNet()
+        foreach (var project in projects.Value!)
+        {
+            await context.DotNet()
                 .Pack(
                     new DotNetPackOptions(project)
                     {
@@ -33,12 +35,16 @@ public class PackTUnitFilesModule : Module<List<PackedProject>>
                         [
                             new KeyValue("Version", version.SemVer!),
                             new KeyValue("PackageVersion", packageVersion!),
+                            new KeyValue("AssemblyFileVersion", version.SemVer!),
                             new KeyValue("IsPackTarget", "true")
                         ],
                         IncludeSource = true,
                         Configuration = Configuration.Release,
-                    }, cancellationToken), cancellationToken: cancellationToken).ProcessOneAtATime();
+                    }, cancellationToken);
+                
+            packedProjects.Add(new PackedProject(project.NameWithoutExtension, version.SemVer!));
+        }
         
-        return projects.Value!.Select(x => new PackedProject(x.NameWithoutExtension, version.SemVer!)).ToList();
+        return packedProjects;
     }
 }

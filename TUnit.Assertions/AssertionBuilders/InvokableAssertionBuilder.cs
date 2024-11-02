@@ -1,59 +1,42 @@
 ﻿using System.Runtime.CompilerServices;
 using TUnit.Assertions.AssertConditions;
-using TUnit.Assertions.Exceptions;
 
 namespace TUnit.Assertions.AssertionBuilders;
 
 public class InvokableAssertionBuilder<TActual> : 
     AssertionBuilder<TActual>, IInvokableAssertionBuilder 
 {
-    internal InvokableAssertionBuilder(Func<Task<AssertionData<TActual>>> assertionDataDelegate, AssertionBuilder<TActual> assertionBuilder) : base(assertionDataDelegate, assertionBuilder.ActualExpression!, assertionBuilder.ExpressionBuilder, assertionBuilder.Assertions)
+    internal InvokableAssertionBuilder(AssertionBuilder<TActual> assertionBuilder) : base(assertionBuilder.AssertionDataDelegate, assertionBuilder.ActualExpression!, assertionBuilder.ExpressionBuilder, assertionBuilder.Assertions)
     {
-    }
-
-    public async Task ProcessAssertionsAsync()
-    {
-        var currentAssertionScope = AssertionScope.GetCurrentAssertionScope();
-        
-        if (currentAssertionScope != null)
+        if (assertionBuilder is InvokableAssertionBuilder<TActual> invokableAssertionBuilder)
         {
-            currentAssertionScope.Add(this);
-            return;
-        }
-
-        var assertionData = await AssertionDataDelegate();
-        
-        foreach (var assertion in Assertions.Reverse())
-        {
-            if (!assertion.Assert(assertionData))
-            {
-                throw new AssertionException(
-                    $"""
-                     {GetExpression()}
-                     {assertion.OverriddenMessage ?? assertion.GetFailureMessage()}
-                     """
-                );
-            }
+            InvokedAssertionData = invokableAssertionBuilder.InvokedAssertionData;
         }
     }
 
-    public async IAsyncEnumerable<BaseAssertCondition> GetFailures()
+    internal async Task<T> ProcessAssertionsAsync<T>(Func<AssertionData<TActual>, T> mapper)
     {
-        var assertionData = await AssertionDataDelegate();
-        
-        foreach (var assertion in Assertions.Reverse())
-        {
-            if (!assertion.Assert(assertionData))
-            {
-                yield return assertion;
-            }
-        }
+        var assertionData = await ProcessAssertionsAsync();
+        return mapper(assertionData);
     }
-
-    public TaskAwaiter GetAwaiter() => ProcessAssertionsAsync().GetAwaiter();
     
-    public string? GetExpression()
+    public TaskAwaiter GetAwaiter() => ((Task)ProcessAssertionsAsync()).GetAwaiter();
+    
+    public async Task<IEnumerable<AssertionResult>> GetAssertionResults()
     {
-        return ExpressionBuilder?.ToString();
+        await this;
+        return Results;
+    }
+
+    string? IInvokableAssertionBuilder.GetExpression()
+    {
+        var expression = ExpressionBuilder?.ToString();
+
+        if (expression?.Length < 100)
+        {
+            return expression;
+        }
+        
+        return $"{expression?[..100]}...";
     }
 }

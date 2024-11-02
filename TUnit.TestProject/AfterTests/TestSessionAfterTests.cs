@@ -5,7 +5,6 @@ namespace TUnit.TestProject.AfterTests;
 
 public class TestSessionAfterHooksTests
 {
-    // TODO: The "After(TestSession)" hook is currently not being called/source generated
     [After(TestSession)]
     public static async Task AfterTestSession(TestSessionContext context)
     {
@@ -26,7 +25,7 @@ public class TestSessionAfterHooksTests
             return;
         }
 
-        await Assert.That(test.ObjectBag["AfterEveryTestSessionHit"]).IsEqualTo(true);
+        await Assert.That(test.ObjectBag["AfterEveryTestSessionHit"]).IsEquatableOrEqualTo(true);
     }
 }
 
@@ -36,6 +35,6 @@ public class TestSessionAfterTests
     public async Task PepareForAfterSession()
     {
         TestContext.Current?.ObjectBag.Add("AfterEveryTestSessionHit", true);
-        await Assert.That(TestContext.Current?.ObjectBag["AfterEveryTestSessionHit"]).IsEqualTo(true);
+        await Assert.That(TestContext.Current?.ObjectBag["AfterEveryTestSessionHit"]).IsEquatableOrEqualTo(true);
     }
 }

@@ -27,7 +27,7 @@ public class DisposableFieldPropertyAnalyzer : ConcurrentDiagnosticAnalyzer
         
         var field = (IFieldSymbol) context.SemanticModel.GetDeclaredSymbol(fieldDeclaration.Declaration.Variables[0])!;
 
-        if (!field.ContainingType.IsTestClass())
+        if (!field.ContainingType.IsTestClass(context.Compilation))
         {
             return;
         }
@@ -89,7 +89,7 @@ public class DisposableFieldPropertyAnalyzer : ConcurrentDiagnosticAnalyzer
         
         var property = context.SemanticModel.GetDeclaredSymbol(propertyDeclaration)!;
 
-        if (!property.ContainingType.IsTestClass())
+        if (!property.ContainingType.IsTestClass(context.Compilation))
         {
             return;
         }
@@ -167,7 +167,7 @@ public class DisposableFieldPropertyAnalyzer : ConcurrentDiagnosticAnalyzer
             return true;
         }
         
-        return method.GetAttributes().Any(a => a.AttributeClass?.ToDisplayString(DisplayFormats.FullyQualifiedNonGenericWithGlobalPrefix) == WellKnown.AttributeFullyQualifiedClasses.AfterAttribute && a.GetHookType() == expectedHookType);
+        return method.GetAttributes().Any(a => a.AttributeClass?.ToDisplayString(DisplayFormats.FullyQualifiedNonGenericWithGlobalPrefix) == WellKnown.AttributeFullyQualifiedClasses.AfterAttribute.WithGlobalPrefix && a.GetHookType() == expectedHookType);
     }
 
     private static bool IsDisposable(ITypeSymbol type)

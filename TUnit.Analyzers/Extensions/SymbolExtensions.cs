@@ -3,23 +3,14 @@ using TUnit.Analyzers.Helpers;
 
 namespace TUnit.Analyzers.Extensions;
 
-internal static class SymbolExtensions
+public static class SymbolExtensions
 {
-    private static readonly string[] DataDrivenAttributes =
-    [
-        WellKnown.AttributeFullyQualifiedClasses.ClassDataSource,
-        WellKnown.AttributeFullyQualifiedClasses.MethodDataSource,
-        WellKnown.AttributeFullyQualifiedClasses.Arguments,
-        WellKnown.AttributeFullyQualifiedClasses.ClassConstructor
-    ];
-    
     public static bool HasDataDrivenAttributes(this ISymbol symbol)
     {
         var attributes = symbol.GetAttributes();
 
         return attributes.Any(a => a.AttributeClass?.AllInterfaces.Any(x =>
-            x.GloballyQualified() ==
-            WellKnown.AttributeFullyQualifiedClasses.IDataAttribute) == true)
+            x.GloballyQualified() == WellKnown.AttributeFullyQualifiedClasses.IDataAttribute.WithGlobalPrefix) == true)
                || HasMatrixValues(symbol);
     }
 
@@ -39,6 +30,6 @@ internal static class SymbolExtensions
 
         return parameters.Value.Any(p => p.GetAttributes().Any(a =>
             a.AttributeClass?.ToDisplayString(DisplayFormats.FullyQualifiedNonGenericWithGlobalPrefix) ==
-            WellKnown.AttributeFullyQualifiedClasses.Matrix));
+            WellKnown.AttributeFullyQualifiedClasses.Matrix.WithGlobalPrefix));
     }
 }
